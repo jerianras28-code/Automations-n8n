@@ -1,0 +1,1802 @@
+{
+  "name": "Hostfully: Booking/Check Out",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        1136,
+        -128
+      ],
+      "id": "18853833-eacc-4b4b-b51b-174dc33c8457"
+    },
+    {
+      "parameters": {
+        "url": "https://api.hostfully.com/api/v3.2/properties",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "agencyUid",
+              "value": "5e05709b-e944-433c-a379-cf8c945416da"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "*/*"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -448,
+        -112
+      ],
+      "id": "74304fb3-24b1-4c7a-8465-7c7503a7c7d7",
+      "name": "Get all properties",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Lks3wmeSeX6eJWi8",
+          "name": "Top Tier"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1152,
+        96
+      ],
+      "id": "9681766c-18e1-4694-87aa-00f226e2ac01",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "properties",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        -112
+      ],
+      "id": "aeea32a7-afd2-4170-a8f9-b232b76c8640",
+      "name": "extract prop uid"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -800,
+        432
+      ],
+      "id": "43afc422-b85f-4ce9-9c16-dd936b85da05",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me1",
+      "typeVersion": 1,
+      "position": [
+        448,
+        32
+      ],
+      "id": "48683bed-b983-47ee-b59b-5fc6d2b748a1"
+    },
+    {
+      "parameters": {
+        "content": "# Sort Properties \n",
+        "height": 288,
+        "width": 544,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -656,
+        -208
+      ],
+      "typeVersion": 1,
+      "id": "5f128bea-bb67-43ee-b037-3c84853ef78b",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "# Get calendar dates\n",
+        "height": 992,
+        "width": 1376,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -576,
+        320
+      ],
+      "typeVersion": 1,
+      "id": "9e29cf0d-da62-406c-a5db-c6ce30a6a24a",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1_o7dn0JvICzQ-_0eMQls14bM8jB0QQqa34rjbJZ3OOs",
+          "mode": "list",
+          "cachedResultName": "Monday date and time",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_o7dn0JvICzQ-_0eMQls14bM8jB0QQqa34rjbJZ3OOs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 289880682,
+          "mode": "list",
+          "cachedResultName": "bookings log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_o7dn0JvICzQ-_0eMQls14bM8jB0QQqa34rjbJZ3OOs/edit#gid=289880682"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Booking ID": "={{ $json.leads.uid.replaceAll('-','') }}",
+            "Property": "={{ $json['property name'] }}",
+            "CheckIn": "={{ $json.leads.checkInLocalDateTime }}",
+            "CheckOut": "={{ $json.leads.checkOutLocalDateTime }}",
+            "FirstName": "={{ $json.leads.guestInformation.firstName }}",
+            "LastName": "={{ $json.leads.guestInformation.lastName }}",
+            "Adults": "={{ $json.leads.guestInformation.adultCount }}",
+            "BookingPlatform": "={{ $json.leads.source }}",
+            "Status": "={{ $json.leads.status }}"
+          },
+          "matchingColumns": [
+            "Booking ID"
+          ],
+          "schema": [
+            {
+              "id": "Booking ID",
+              "displayName": "Booking ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Property",
+              "displayName": "Property",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "CheckIn",
+              "displayName": "CheckIn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "CheckOut",
+              "displayName": "CheckOut",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "FirstName",
+              "displayName": "FirstName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "LastName",
+              "displayName": "LastName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Adults",
+              "displayName": "Adults",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "BookingPlatform",
+              "displayName": "BookingPlatform",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1792,
+        240
+      ],
+      "id": "6dfdd0f6-7b4e-4b86-8b34-62e2cd15202b",
+      "name": "add event info",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0ZhlIbLEHgE4owEm",
+          "name": "Google Sheets Jerian"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        768,
+        32
+      ],
+      "id": "f434a068-2ca1-4e12-8ce5-7e5cf2f60ac6",
+      "name": "Wait",
+      "webhookId": "a2de8f46-55d3-4cf0-9c8b-1023d5bf3597"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1216,
+        768
+      ],
+      "id": "0c21ba24-a3cf-4282-b363-1a9b91feb6fe",
+      "name": "Wait1",
+      "webhookId": "a3a71c6b-ffd3-4ffc-9e85-bc8998458e45"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.leads.status }}",
+                    "rightValue": "BOOKED",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "85e2d9f7-a52f-43a3-977d-f9149afead8f"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "booked"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "0f536cd8-1f64-4fbd-893c-9c0bdb4c997f",
+                    "leftValue": "={{ $json.leads.status }}",
+                    "rightValue": "NEW",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "new"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "55621b18-ef55-4388-b2c9-d57f186696bd",
+                    "leftValue": "={{ $json.leads.status }}",
+                    "rightValue": "CANCELLED",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "cancelled"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b34c4da0-96ae-41e4-a94b-660a70f8a39d",
+                    "leftValue": "={{ $json.leads.status }}",
+                    "rightValue": "BLOCKED",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "blocked"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "bce92aa7-2398-48f2-aaa5-2f9680bfdf1e",
+                    "leftValue": "={{ $json.leads.status }}",
+                    "rightValue": "CLOSED",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "closed"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        1568,
+        512
+      ],
+      "id": "e132ea02-c615-4c48-998e-d232c7d90003",
+      "name": "Switch",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1040,
+        576
+      ],
+      "id": "00946769-408e-4634-a64b-1a33699ef8c5",
+      "name": "Wait2",
+      "webhookId": "f124887e-4234-4a15-9271-9575d82a73d8"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        608,
+        32
+      ],
+      "id": "29265e91-1212-45ed-948d-8badfa7af013",
+      "name": "Limit",
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "yzOxXKBTbMBx4LZV",
+          "mode": "list",
+          "cachedResultName": "hostfully loop",
+          "cachedResultUrl": "/projects/Vp0kIC50nFn3i6LF/datatables/yzOxXKBTbMBx4LZV"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "loop_reset",
+              "condition": "isFalse"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "loop_reset": true
+          },
+          "matchingColumns": [
+            "loop_reset"
+          ],
+          "schema": [
+            {
+              "id": "loop_reset",
+              "displayName": "loop_reset",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        928,
+        32
+      ],
+      "id": "4946fe69-f1fa-4e72-bf7f-7061cef29684",
+      "name": "set reset loop",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "yzOxXKBTbMBx4LZV",
+          "mode": "list",
+          "cachedResultName": "hostfully loop",
+          "cachedResultUrl": "/projects/Vp0kIC50nFn3i6LF/datatables/yzOxXKBTbMBx4LZV"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "loop_reset",
+              "condition": "isTrue"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "loop_reset": "={{ false }}"
+          },
+          "matchingColumns": [
+            "loop_reset"
+          ],
+          "schema": [
+            {
+              "id": "loop_reset",
+              "displayName": "loop_reset",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        1584,
+        784
+      ],
+      "id": "6facc9e5-83ca-476c-af58-7d329aa41e19",
+      "name": "set continue loop",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "yzOxXKBTbMBx4LZV",
+          "mode": "list",
+          "cachedResultName": "hostfully loop",
+          "cachedResultUrl": "/projects/Vp0kIC50nFn3i6LF/datatables/yzOxXKBTbMBx4LZV"
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        1792,
+        784
+      ],
+      "id": "5ae33f5d-a986-4531-9db8-c4a797d9ad2e",
+      "name": "Get row(s)1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f4a41737-1d34-4075-b949-1d3c4a396fda",
+              "name": "uid",
+              "value": "={{ $('Set fields').item.json.uid }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1984,
+        960
+      ],
+      "id": "12cfeb33-97d5-40aa-9eb0-ba1490a8f97f",
+      "name": "set property uid"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f4a41737-1d34-4075-b949-1d3c4a396fda",
+              "name": "uid",
+              "value": "={{ $json.leads.propertyUid }}",
+              "type": "string"
+            },
+            {
+              "id": "b49f5a26-fbd0-4eab-8acb-cbd01ffb9876",
+              "name": "property name",
+              "value": "={{ $('Loop Over properties').item.json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "fcc905ae-119c-42d0-8657-fd691135428e",
+              "name": "leads.checkInLocalDateTime",
+              "value": "={{ $json.leads.checkInLocalDateTime }}",
+              "type": "string"
+            },
+            {
+              "id": "907e0d27-ba15-4a7c-a7dd-a2cd503c7614",
+              "name": "leads.checkOutLocalDateTime",
+              "value": "={{ $json.leads.checkOutLocalDateTime }}",
+              "type": "string"
+            },
+            {
+              "id": "38584e5b-0b10-42e7-a08c-eb5fa45649f3",
+              "name": "leads.status",
+              "value": "={{ $json.leads.status }}",
+              "type": "string"
+            },
+            {
+              "id": "4f62025d-8ca1-4518-84d2-b25ddd6bc2fc",
+              "name": "leads.type",
+              "value": "={{ $json.leads.type }}",
+              "type": "string"
+            },
+            {
+              "id": "ada8ac6d-0738-47a4-866a-e0f32d018439",
+              "name": "leads.source",
+              "value": "={{ $json.leads.source }}",
+              "type": "string"
+            },
+            {
+              "id": "16ce0524-2050-4087-b3f3-5fac80ddebe4",
+              "name": "leads.guestInformation.firstName",
+              "value": "={{ $json.leads.guestInformation.firstName }}",
+              "type": "string"
+            },
+            {
+              "id": "8382cd71-51f7-46c2-8a1b-35ac67aa918a",
+              "name": "leads.guestInformation.lastName",
+              "value": "={{ $json.leads.guestInformation.lastName }}",
+              "type": "string"
+            },
+            {
+              "id": "80f2fac4-04b7-47a3-bc34-73ee56a0d178",
+              "name": "leads.guestInformation.adultCount",
+              "value": "={{ $json.leads.guestInformation.adultCount }}",
+              "type": "string"
+            },
+            {
+              "id": "2f0da99b-53fb-4ed7-8261-cbf1d24cb455",
+              "name": "leads.uid",
+              "value": "={{ $json.leads.uid }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        592,
+        768
+      ],
+      "id": "0130c22c-4e43-47ce-9242-a82a065537da",
+      "name": "Set fields"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "dca57ac2-216c-43b3-a4bb-6b7790fe5995",
+              "leftValue": "={{ $json.leads.type }}",
+              "rightValue": "BOOKING",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1248,
+        576
+      ],
+      "id": "b513a194-fbb9-493b-8a41-9ac2b1f76760",
+      "name": "check for booking"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1_o7dn0JvICzQ-_0eMQls14bM8jB0QQqa34rjbJZ3OOs",
+          "mode": "list",
+          "cachedResultName": "Monday date and time",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_o7dn0JvICzQ-_0eMQls14bM8jB0QQqa34rjbJZ3OOs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 289880682,
+          "mode": "list",
+          "cachedResultName": "bookings log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_o7dn0JvICzQ-_0eMQls14bM8jB0QQqa34rjbJZ3OOs/edit#gid=289880682"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Booking ID",
+              "lookupValue": "={{ $json['Booking ID'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2000,
+        240
+      ],
+      "id": "6c59dae7-b693-49f4-a4fb-850bdb5c581f",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0ZhlIbLEHgE4owEm",
+          "name": "Google Sheets Jerian"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "calendar": {
+          "__rl": true,
+          "value": "c_31a4d3e4ba26d20ac7fe0da4ed954f3dfbbf60e4d51a3a66946aa584d1c3cae9@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "Hostfully Bookings"
+        },
+        "eventId": "={{ $json[\"Booking ID\"] + \"in\"}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        2624,
+        -288
+      ],
+      "id": "94d545c2-cd42-43bb-9571-99756c5196de",
+      "name": "Get an event6",
+      "alwaysOutputData": false,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "TvU7n1TuciLnjAqL",
+          "name": "Google clanedar top tier"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "calendar": {
+          "__rl": true,
+          "value": "c_31a4d3e4ba26d20ac7fe0da4ed954f3dfbbf60e4d51a3a66946aa584d1c3cae9@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "Hostfully Bookings"
+        },
+        "eventId": "={{ $('Get row(s) in sheet').item.json['Booking ID'] + \"in\" }}",
+        "updateFields": {
+          "color": "=2",
+          "description": "={{ $('Get row(s) in sheet').item.json.CheckIn.toDateTime().format('LLL dd') }}-{{ $('Get row(s) in sheet').item.json.CheckOut.toDateTime().format('LLL dd') }}\n\n{{ $('Get row(s) in sheet').item.json.Adults }} Adult(s)\nProperty:{{ $('Get row(s) in sheet').item.json.Property }}",
+          "end": "={{ $('Get row(s) in sheet').item.json.CheckIn.toDateTime().plus(1, 'hour') }}",
+          "start": "={{ $('Get row(s) in sheet').item.json.CheckIn }}",
+          "summary": "={{ $('Get row(s) in sheet').item.json.BookingPlatform.replaceAll('DIRECT_', '').replaceAll('DOT', '.').replaceAll('_API', '') }}:{{ $('Get row(s) in sheet').item.json.FirstName }} {{ $('Get row(s) in sheet').item.json.LastName }} Check-In"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        2864,
+        -432
+      ],
+      "id": "bc3705a7-b311-464b-aff4-168d2a135ddf",
+      "name": "Update checkIn event",
+      "notesInFlow": false,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "TvU7n1TuciLnjAqL",
+          "name": "Google clanedar top tier"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "c_31a4d3e4ba26d20ac7fe0da4ed954f3dfbbf60e4d51a3a66946aa584d1c3cae9@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "Hostfully Bookings"
+        },
+        "start": "={{ $json.CheckIn }}",
+        "end": "={{ $json.CheckIn.toDateTime().plus(1, 'hour') }}",
+        "additionalFields": {
+          "color": "=2",
+          "description": "={{ $json.CheckIn.toDateTime().format('LLL dd') }}-{{ $json.CheckOut.toDateTime().format('LLL dd') }}\n\n{{ $json.Adults }} Adult(s)\nProperty:{{ $json.Property }}",
+          "id": "={{ $json['Booking ID'] + \"in\" }}",
+          "summary": "={{ $json.BookingPlatform.replaceAll('DIRECT_', '').replaceAll('DOT', '.').replaceAll('_API', '') }}:{{ $json.FirstName }} {{ $json.LastName }} Check-In"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        2864,
+        -224
+      ],
+      "id": "1373a81f-6641-4551-a2d3-d80514afc82e",
+      "name": "Create CheckIn event",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "TvU7n1TuciLnjAqL",
+          "name": "Google clanedar top tier"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "c_31a4d3e4ba26d20ac7fe0da4ed954f3dfbbf60e4d51a3a66946aa584d1c3cae9@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "Hostfully Bookings"
+        },
+        "start": "={{ $json.CheckOut }}",
+        "end": "={{ $json.CheckOut.toDateTime().plus(1, 'hour') }}",
+        "additionalFields": {
+          "color": "=11",
+          "description": "={{ $json.CheckIn.toDateTime().format('LLL dd') }}-{{ $json.CheckOut.toDateTime().format('LLL dd') }}\n\n{{ $json.Adults }} Adult(s)\nProperty:{{ $json.Property }}",
+          "id": "={{ $json['Booking ID'] + \"out\" }}",
+          "summary": "={{ $json.BookingPlatform.replaceAll('DIRECT_', '').replaceAll('DOT', '.').replaceAll('_API', '') }}:{{ $json.FirstName }} {{ $json.LastName }} Check-Out"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        2864,
+        240
+      ],
+      "id": "7e6bb892-4d50-49b5-8d56-d27054dc24dc",
+      "name": "Create CheckOut event",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "TvU7n1TuciLnjAqL",
+          "name": "Google clanedar top tier"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "calendar": {
+          "__rl": true,
+          "value": "c_dc899a73ae9766bb3467b9bec639680b25b87335205f4c3da3de275011150293@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "new test call"
+        },
+        "eventId": "={{ $json.id + \"out\" }}",
+        "updateFields": {
+          "color": "=11",
+          "description": "={{ $json.CheckIn.toDateTime().format('LLL dd') }}-{{ $json.CheckOut.toDateTime().format('LLL dd') }}\n\n{{ $json.Adults }} Adult(s)\nProperty:{{ $json.Property }}",
+          "end": "={{ $json.CheckOut.toDateTime().plus(1, 'hour') }}",
+          "start": "={{ $json.CheckOut }}",
+          "summary": "={{ $json.BookingPlatform.replaceAll('DIRECT_', '').replaceAll('DOT', '.').replaceAll('_API', '') }}:{{ $json.FirstName }} {{ $json.LastName }} Check-Out"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        3712,
+        1152
+      ],
+      "id": "b34e4f09-e478-46e7-9334-735144209439",
+      "name": "Update checkOut event",
+      "notesInFlow": false,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "D9TKI1HCGB17mD5j",
+          "name": "MRZ"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "calendar": {
+          "__rl": true,
+          "value": "c_31a4d3e4ba26d20ac7fe0da4ed954f3dfbbf60e4d51a3a66946aa584d1c3cae9@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "Hostfully Bookings"
+        },
+        "eventId": "={{ $json[\"Booking ID\"] + \"out\"}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        2640,
+        128
+      ],
+      "id": "e83ac43d-c94a-4b18-8bcf-cb6525deb1aa",
+      "name": "Get an event",
+      "alwaysOutputData": false,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "TvU7n1TuciLnjAqL",
+          "name": "Google clanedar top tier"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "content": "# CheckOut \n",
+        "height": 448,
+        "width": 608,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2544,
+        -48
+      ],
+      "typeVersion": 1,
+      "id": "9ddaaf37-c6a7-4513-870d-cfe04291ebc5",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# CheckIn\n",
+        "height": 448,
+        "width": 608,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2544,
+        -496
+      ],
+      "typeVersion": 1,
+      "id": "9ecca920-005c-4ce7-933e-a7c6472f0be7",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "calendar": {
+          "__rl": true,
+          "value": "c_31a4d3e4ba26d20ac7fe0da4ed954f3dfbbf60e4d51a3a66946aa584d1c3cae9@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "Hostfully Bookings"
+        },
+        "eventId": "={{ $('Get row(s) in sheet').item.json['Booking ID'] + \"out\" }}",
+        "updateFields": {
+          "color": "=11",
+          "description": "={{ $('Get row(s) in sheet').item.json.CheckIn.toDateTime().format('LLL dd') }}-{{ $('Get row(s) in sheet').item.json.CheckOut.toDateTime().format('LLL dd') }}\n\n{{ $('Get row(s) in sheet').item.json.Adults }} Adult(s)\nProperty:{{ $('Get row(s) in sheet').item.json.Property }}",
+          "end": "={{ $('Get row(s) in sheet').item.json.CheckOut.toDateTime().plus(1, 'hour') }}",
+          "start": "={{ $('Get row(s) in sheet').item.json.CheckOut }}",
+          "summary": "={{ $('Get row(s) in sheet').item.json.BookingPlatform.replaceAll('DIRECT_', '').replaceAll('DOT', '.').replaceAll('_API', '') }}:{{ $('Get row(s) in sheet').item.json.FirstName }} {{ $('Get row(s) in sheet').item.json.LastName }} Check-Out"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        2864,
+        32
+      ],
+      "id": "a398fd51-d6ce-419c-9ec8-3fb9a7e70062",
+      "name": "Update checkOut event1",
+      "notesInFlow": false,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "TvU7n1TuciLnjAqL",
+          "name": "Google clanedar top tier"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://sandbox.hostfully.com/api/v3.2/leads",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "leadUids"
+            },
+            {
+              "name": "checkInFrom",
+              "value": "g"
+            },
+            {
+              "name": "_limit",
+              "value": "50"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "*/*"
+            },
+            {
+              "name": "accept",
+              "value": "*/*"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -784,
+        848
+      ],
+      "id": "f9c0fc6d-5c41-4838-ab81-8d8b86aecdd3",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "yzOxXKBTbMBx4LZV",
+          "mode": "list",
+          "cachedResultName": "hostfully loop",
+          "cachedResultUrl": "/projects/Vp0kIC50nFn3i6LF/datatables/yzOxXKBTbMBx4LZV"
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        -608,
+        -112
+      ],
+      "id": "336e420c-418a-4076-af17-400cfdbba111",
+      "name": "get loop bool"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        0,
+        -112
+      ],
+      "id": "716db7ec-8da8-4b23-ae85-2c0ab043f782",
+      "name": "Loop Over properties"
+    },
+    {
+      "parameters": {
+        "url": "https://api.hostfully.com/api/v3.2/leads",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "propertyUid",
+              "value": "={{ $json.uid }}"
+            },
+            {
+              "name": "_limit",
+              "value": "50"
+            },
+            {
+              "name": "checkInFromUtcDateTime",
+              "value": "={{ $now.format('yyyy-MM-dd') }}T{{ $now.format('T:ss') }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "*/*"
+            },
+            {
+              "name": "accept",
+              "value": "*/*"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -512,
+        640
+      ],
+      "id": "9b5e1636-6a41-446b-9b30-5304c15b7777",
+      "name": "Get Leads",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Lks3wmeSeX6eJWi8",
+          "name": "Top Tier"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "yzOxXKBTbMBx4LZV",
+          "mode": "list",
+          "cachedResultName": "hostfully loop",
+          "cachedResultUrl": "/projects/Vp0kIC50nFn3i6LF/datatables/yzOxXKBTbMBx4LZV"
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        640
+      ],
+      "id": "08e426f6-9057-4dfa-a321-c9b0c94915f5",
+      "name": "get loop bool1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6ded04a8-3f28-40a8-9531-dfbe8a38e90c",
+              "name": "leads",
+              "value": "={{ $('Get Leads').item.json.leads }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -176,
+        656
+      ],
+      "id": "0da0570a-f29b-4b3f-9be3-653239c68804",
+      "name": "set lead list"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "leads",
+        "include": "selectedOtherFields",
+        "fieldsToInclude": "uid",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        0,
+        656
+      ],
+      "id": "b9a0dff0-df00-41cd-b717-27b7d9046172",
+      "name": "extract lead list"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": "={{ $('get loop bool1').item.json.loop_reset }}"
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        240,
+        656
+      ],
+      "id": "9ebb9e61-43db-447f-b625-7c861c1a8dca",
+      "name": "Loop Over lead list"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "stall",
+      "typeVersion": 1,
+      "position": [
+        2080,
+        624
+      ],
+      "id": "ce0dbbb7-0ca7-446f-b243-6cfefb9400be",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "# Cancelled",
+        "height": 448,
+        "width": 608,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2544,
+        416
+      ],
+      "typeVersion": 1,
+      "id": "867d5738-67dc-4391-a535-3363f8d40726",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "dca57ac2-216c-43b3-a4bb-6b7790fe5995",
+              "leftValue": "={{ $json.Status }}",
+              "rightValue": "BOOKED",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2192,
+        240
+      ],
+      "id": "6f587e69-9c38-4843-b44b-6a62362ba7af",
+      "name": "check for booking1"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "calendar": {
+          "__rl": true,
+          "value": "c_31a4d3e4ba26d20ac7fe0da4ed954f3dfbbf60e4d51a3a66946aa584d1c3cae9@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "Hostfully Bookings"
+        },
+        "eventId": "={{ $json[\"Booking ID\"] + \"out\"}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        2656,
+        608
+      ],
+      "id": "14f33b88-9cf4-48d3-8e65-e6cc4749f686",
+      "name": "Delete an event",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "TvU7n1TuciLnjAqL",
+          "name": "Google clanedar top tier"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "deleted",
+      "typeVersion": 1,
+      "position": [
+        2944,
+        464
+      ],
+      "id": "0f32d376-aedb-4b0d-a658-e971efca1460"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "doesnt exist/already deleted",
+      "typeVersion": 1,
+      "position": [
+        2944,
+        704
+      ],
+      "id": "5ab0e15c-aee4-4bf1-b892-939f2e8990c6"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 4
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1152,
+        -144
+      ],
+      "id": "7323e198-f95d-4818-b625-86f1136de24a",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Replace Me": {
+      "main": [
+        []
+      ]
+    },
+    "Get all properties": {
+      "main": [
+        [
+          {
+            "node": "extract prop uid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "get loop bool",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "extract prop uid": {
+      "main": [
+        [
+          {
+            "node": "Loop Over properties",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        []
+      ]
+    },
+    "Replace Me1": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "set reset loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "set continue loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "add event info",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [
+          {
+            "node": "stall",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        []
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "check for booking",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set reset loop": {
+      "main": [
+        [
+          {
+            "node": "get loop bool",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set continue loop": {
+      "main": [
+        [
+          {
+            "node": "Get row(s)1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s)1": {
+      "main": [
+        [
+          {
+            "node": "set property uid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set property uid": {
+      "main": [
+        [
+          {
+            "node": "Get Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set fields": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check for booking": {
+      "main": [
+        [
+          {
+            "node": "add event info",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "add event info": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get an event6": {
+      "main": [
+        [
+          {
+            "node": "Update checkIn event",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create CheckIn event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "check for booking1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update checkIn event": {
+      "main": [
+        []
+      ]
+    },
+    "Create CheckIn event": {
+      "main": [
+        []
+      ]
+    },
+    "Get an event": {
+      "main": [
+        [
+          {
+            "node": "Update checkOut event1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create CheckOut event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get loop bool": {
+      "main": [
+        [
+          {
+            "node": "Get all properties",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over properties": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Leads": {
+      "main": [
+        [
+          {
+            "node": "get loop bool1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get loop bool1": {
+      "main": [
+        [
+          {
+            "node": "set lead list",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set lead list": {
+      "main": [
+        [
+          {
+            "node": "extract lead list",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "extract lead list": {
+      "main": [
+        [
+          {
+            "node": "Loop Over lead list",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over lead list": {
+      "main": [
+        [
+          {
+            "node": "Replace Me1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check for booking1": {
+      "main": [
+        [
+          {
+            "node": "Get an event",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get an event6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Delete an event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete an event": {
+      "main": [
+        [
+          {
+            "node": "deleted",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "doesnt exist/already deleted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "get loop bool",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "60a013a9-77ce-4746-b88d-86088bf74217",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2e8357aa47c07f057215c7992f20bb0aaa947c79af4f79a1668ba4e0711d7f47"
+  },
+  "id": "QvAjIvIOpsPFbMky",
+  "tags": [
+    {
+      "updatedAt": "2025-07-23T17:36:52.066Z",
+      "createdAt": "2025-07-23T17:36:52.066Z",
+      "id": "kcUKO5xZ1sYa3DH6",
+      "name": "Terrick"
+    }
+  ]
+}
